@@ -1,24 +1,30 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"strconv"
+)
 
 const (
-	WelcomeMessage = "Welcome to Go Bank!"
-	PromptMessage  = "What do you want to do?"
-	CheckBalance   = "1. Check balance"
-	DepositMoney   = "2. Deposit money"
-	WithdrawMoney  = "3. Withdraw money"
-	ExitMessage    = "4. Exit"
+	accountBalanceFile = "balance.txt"
+	WelcomeMessage     = "Welcome to Go Bank!"
+	PromptMessage      = "What do you want to do?"
+	CheckBalance       = "1. Check balance"
+	DepositMoney       = "2. Deposit money"
+	WithdrawMoney      = "3. Withdraw money"
+	ExitMessage        = "4. Exit"
 )
 
 func main() {
 
-	accountBalance := 1000.00
+	accountBalance := getBalanceFromFile()
 
 	printMenu()
 
 	for {
 		choice := getUserChoice()
+
 		switch choice {
 		case 1:
 			fmt.Println("Your balance is", accountBalance)
@@ -29,11 +35,12 @@ func main() {
 
 			if depositAmount <= 0 {
 				fmt.Println("Invalid amount. Must be greater than 0")
-				return
+				continue
 			}
 
 			accountBalance += depositAmount
 			fmt.Println("Balance updated! New amount:", accountBalance)
+			writeBalanceToFile(accountBalance)
 		case 3:
 			var withdrawAmount float64
 			fmt.Print("Your withdraw: ")
@@ -41,16 +48,17 @@ func main() {
 
 			if withdrawAmount <= 0 {
 				fmt.Println("Invalid amount. Must be greater than 0")
-				return
+				continue
 			}
 
 			if withdrawAmount > accountBalance {
 				fmt.Println("Invalid amount. You can't withdraw more than you have.")
-				return
+				continue
 			}
 
 			accountBalance -= withdrawAmount
 			fmt.Println("Balance updated! New amount:", accountBalance)
+			writeBalanceToFile(accountBalance)
 		default:
 			fmt.Println("Goodbye!")
 			return
@@ -79,4 +87,15 @@ func getUserChoice() int {
 	fmt.Print("Your choice: ")
 	fmt.Scan(&choice)
 	return choice
+}
+
+func writeBalanceToFile(balance float64) {
+	balanceTxt := fmt.Sprint(balance)
+	os.WriteFile(accountBalanceFile, []byte(balanceTxt), 0644)
+}
+
+func getBalanceFromFile() float64 {
+	balanceTxt, _ := os.ReadFile(accountBalanceFile)
+	balance, _ := strconv.ParseFloat(string(balanceTxt), 64)
+	return balance
 }
