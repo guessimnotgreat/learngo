@@ -1,25 +1,16 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"os"
-	"strconv"
+
+	"github.com/guessimnotgreat/learngo/fileops"
 )
 
-const (
-	accountBalanceFile = "balance.txt"
-	WelcomeMessage     = "Welcome to Go Bank!"
-	PromptMessage      = "What do you want to do?"
-	CheckBalance       = "1. Check balance"
-	DepositMoney       = "2. Deposit money"
-	WithdrawMoney      = "3. Withdraw money"
-	ExitMessage        = "4. Exit"
-)
+const accountBalanceFile = "balance.txt"
 
 func main() {
 
-	accountBalance, err := getBalanceFromFile()
+	accountBalance, err := fileops.GetFloatFromFile(accountBalanceFile)
 	if err != nil {
 		fmt.Println("ERROR")
 		fmt.Println(err)
@@ -47,7 +38,7 @@ func main() {
 
 			accountBalance += depositAmount
 			fmt.Println("Balance updated! New amount:", accountBalance)
-			writeBalanceToFile(accountBalance)
+			fileops.WriteFloatToFile(accountBalance, accountBalanceFile)
 		case 3:
 			var withdrawAmount float64
 			fmt.Print("Your withdraw: ")
@@ -65,7 +56,7 @@ func main() {
 
 			accountBalance -= withdrawAmount
 			fmt.Println("Balance updated! New amount:", accountBalance)
-			writeBalanceToFile(accountBalance)
+			fileops.WriteFloatToFile(accountBalance, accountBalanceFile)
 		default:
 			fmt.Println("Goodbye!")
 			return
@@ -74,43 +65,9 @@ func main() {
 
 }
 
-func printMenu() {
-	items := []string{
-		WelcomeMessage,
-		PromptMessage,
-		CheckBalance,
-		DepositMoney,
-		WithdrawMoney,
-		ExitMessage,
-	}
-
-	for _, item := range items {
-		fmt.Println(item)
-	}
-}
-
 func getUserChoice() int {
 	var choice int
 	fmt.Print("Your choice: ")
 	fmt.Scan(&choice)
 	return choice
-}
-
-func writeBalanceToFile(balance float64) {
-	balanceTxt := fmt.Sprint(balance)
-	os.WriteFile(accountBalanceFile, []byte(balanceTxt), 0644)
-}
-
-func getBalanceFromFile() (float64, error) {
-	balanceTxt, err := os.ReadFile(accountBalanceFile)
-	if err != nil {
-		return 1000, errors.New("Failed to find balance file.")
-	}
-
-	balance, err := strconv.ParseFloat(string(balanceTxt), 64)
-	if err != nil {
-		return 1000, errors.New("Failed to parse stored balance value.")
-	}
-
-	return balance, nil
 }
