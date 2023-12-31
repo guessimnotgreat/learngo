@@ -15,12 +15,12 @@ func WriteFloatToFile(value float64, filename string) {
 func GetFloatFromFile(filename string) (float64, error) {
 	data, err := os.ReadFile(filename)
 	if err != nil {
-		return 1000, errors.New("Failed to find file.")
+		return 1000, errors.New("failed to find file")
 	}
 
 	value, err := strconv.ParseFloat(string(data), 64)
 	if err != nil {
-		return 1000, errors.New("Failed to parse stored value.")
+		return 1000, errors.New("failed to parse stored value")
 	}
 
 	return value, nil

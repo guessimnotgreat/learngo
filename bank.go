@@ -6,11 +6,10 @@ import (
 	"github.com/guessimnotgreat/learngo/fileops"
 )
 
-const accountBalanceFile = "balance.txt"
+const acctBalanceFile = "balance.txt"
 
 func main() {
-
-	accountBalance, err := fileops.GetFloatFromFile(accountBalanceFile)
+	acctBalance, err := fileops.GetFloatFromFile(acctBalanceFile)
 	if err != nil {
 		fmt.Println("ERROR")
 		fmt.Println(err)
@@ -25,7 +24,7 @@ func main() {
 
 		switch choice {
 		case 1:
-			fmt.Println("Your balance is", accountBalance)
+			fmt.Println("Your balance is", acctBalance)
 		case 2:
 			var depositAmount float64
 			fmt.Print("Your deposit: ")
@@ -36,9 +35,9 @@ func main() {
 				continue
 			}
 
-			accountBalance += depositAmount
-			fmt.Println("Balance updated! New amount:", accountBalance)
-			fileops.WriteFloatToFile(accountBalance, accountBalanceFile)
+			acctBalance += depositAmount
+			fmt.Println("Balance updated! New amount:", acctBalance)
+			fileops.WriteFloatToFile(acctBalance, acctBalanceFile)
 		case 3:
 			var withdrawAmount float64
 			fmt.Print("Your withdraw: ")
@@ -49,20 +48,19 @@ func main() {
 				continue
 			}
 
-			if withdrawAmount > accountBalance {
+			if withdrawAmount > acctBalance {
 				fmt.Println("Invalid amount. You can't withdraw more than you have.")
 				continue
 			}
 
-			accountBalance -= withdrawAmount
-			fmt.Println("Balance updated! New amount:", accountBalance)
-			fileops.WriteFloatToFile(accountBalance, accountBalanceFile)
+			acctBalance -= withdrawAmount
+			fmt.Println("Balance updated! New amount:", acctBalance)
+			fileops.WriteFloatToFile(acctBalance, acctBalanceFile)
 		default:
 			fmt.Println("Goodbye!")
 			return
 		}
 	}
-
 }
 
 func getUserChoice() int {
